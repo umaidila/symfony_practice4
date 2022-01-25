@@ -3,12 +3,12 @@ from client import Client
 
 if __name__ == '__main__':
 
-    ip = 'http://45.143.139.222'
+    client = Client()
 
-    client = Client(ip)
+    print(client.setToken("semen", "password"))
+    print(client.getFiles())
+    print(client.delFile(4))
+    print(client.getFiles())
 
-    client.setToken("semen", "mypassowrd")
-    print(client.addTodo("new todo for semen"))
-    print(client.getTodos())
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
