@@ -5,8 +5,9 @@ if __name__ == '__main__':
 
     print(client.setToken("semen", "password"))
     print(client.getFiles())
-    print(client.addFile('temp.png'))
-    print(client.getFiles())
-    # print(client.delFile(9)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(client.addFile('main.html'))
+
+    print(client.getFile(12))
+    # print(client.delFile(12))
+

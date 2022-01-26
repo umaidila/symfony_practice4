@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<title> 2я лабораторная </title>
+	<style type="text/css">		
+		input[readonly="readonly"]{
+			border: 0px;
+			font-size: 10.5pt;
+			background-color: #f5f5dc;
+		}
+		.prompt{
+			font-style: italic;
+			color:rgb(112, 112, 112)
+		}
+		.calcimt{
+			opacity: 0;
+		}
+		.imtDescription{
+			color:black;
+		}
+		.dateStyle{
+			font-weight: 700;
+			font-size: 14pt;
+			vertical-align: top;
+		}
+		.todoStyle{
+			font-style: italic;
+			vertical-align: top;
+		}
+		td{
+			vertical-align: top;
+		}
+		p{
+			font-size: 16pt;
+			font-weight: 500;			
+		}
+		body{
+			background-color:#f5f5dc;
+		}
+	</style>
+	<script scr="jquery.js">
+		var startDate;
+		var run0 = "ходьба 15 минут";
+		var run1 = "ходьба 20 минут";
+		var run2 = "ходьба 25 минут";
+		var run3 = "ходьба 30 минут";
+		var run4 = "1мин бег/2мин ходьба(7 раз)";		
+		var run5 = "2мин бег/2мин ходьба(5 раз)";
+		var run6 = "3мин бег/2мин ходьба(4 раза)";
+		var run7 = "5мин бег/2мин ходьба(3 раза)";
+		var run8 = "6мин бег/1.5мин ходьба(3 раза)";
+		var run9 = "8мин бег/1.5мин ходьба(2 раза)";
+		var run10 = "10мин бег/1.5 мин ходьба(2 раза)";
+		var run11 = "12мин бег/1мин ходьба/8мин бег";
+		var run12 = "15мин бег/1мин ходьба/5мин бег"
+		var run13 = "бег 20 минут";
+		var run14 = "бег 25 минут";
+		var run15 = "бег 30 минут";
+		var run16 = "бег 35 минут";
+		var run17 = "бег 40 минут";
+		var runForSkinnyAndPreFat = [run4,run4,run4,run4,run5,run5,run5,run6,run6,run6,run7,run7,run7,run8,run8,run9,run9,run10,run10,run11];
+		var runForNormal = [run5,run5,run6,run6,run7,run7,run8,run8,run9,run9,run10,run10,run11,run12,run13,run14,run15,run16,run17,run17];
+		var runForLittleFat = [run3,run3,run4,run4,run4,run5,run5,run5,run6,run6,run6,run7,run7,run7,run8,run8,run8,run9,run9,run9];
+		var runForMediumFat = [run1,run1,run2,run2,run3,run3,run4,run4,run4,run4,run5,run5,run5,run6,run6,run6,run7,run7,run7,run8];
+		var runForExtraFat = [run0,run0,run0,run1,run1,run1,run2,run2,run2,run3,run3,run3,run4,run4,run4,run5,run5,run5,run6,run6];
+		var pushUpsPlan = ["2,3,2,3","3,4,3,4","4,5,4,5","5,6,4,6","5,6,4,7","5,7,5,7","5,7,6,7","6,7,6,7","8,10,7,10","9,11,8,11","10,12,9,13","12,13,10,15","12,14,10,15","13,15,11,17","14,16,13,19","14,19,14,19","16,21,15,21","18,22,16,21","20,25,20,23","23,28,22,25","25,29,25,30","29,33,29,33","15,18,18,15,14,30","18,18,20,17,15,35","19,19,22,22,18,35","20,20,24,20,22,40","20,20,27,27,21,44","22,22,30,25,28,55","26,33,33,26,22,60","28,35,35,27,23,60"]; // 0..29
+		var pullUpsPlan = ["1,2,1,2","2,3,2,3","3,4,2,4","3,4,3,5","4,5,4,6","5,7,5,6","5,8,5,8","6,9,6,8","6,9,6,10","7,10,6,10","8,11,8,10","9,11,9,11","9,13,10,12","10,14,10,13","11,15,10,13","12,16,11,15","12,16,12,16","13,17,13,16","14,19,13,18","15,20,14,20","16,21,16,20","17,22,16,21","18,23,18,22","19,25,18,24","19,27,19,26","20,28,20,28","26,29,25,29","26,30,26,31","28,32,26,32"]; // 0..28
+
+		function switchWomenPullup(){
+			//document.body.innerHTML = document.body.innerHTML.replace('Подтягиваний','Приседаний');
+			var t = document.getElementById('pullups');
+			t.value = "Приседании:";
+			return;
+		}
+		function switchMenPullUp(){
+			var t = document.getElementById('pullups');
+			t.value = "Подтягивании:";
+			return;
+		}
+		function zeroFirstFormat(value){
+				if (value<10){
+					value = '0'+value;
+				}
+				return value;
+			}	
+		function setStartDate(i){			
+			startDate = new Date();
+			var dateText = document.getElementById('startDateField');
+			
+			var day = zeroFirstFormat(startDate.getDate());
+			var month = zeroFirstFormat(startDate.getMonth()+1);
+			var year = zeroFirstFormat(startDate.getFullYear());		
+			if (i==2){                                  // если с завтрашнего дня
+				startDate.setDate(startDate.getDate()+1);
+				day = zeroFirstFormat(startDate.getDate());
+				month = zeroFirstFormat(startDate.getMonth()+1);
+				year = zeroFirstFormat(startDate.getFullYear());
+			}
+			if (i==3){                                 // со след понедельника
+				while(startDate.getDay()!=1) 
+				{	
+					startDate.setDate(startDate.getDate()+1);	// повышаем дату на 1 день, пока не будет днём недели понедельник				
+				}
+				day = zeroFirstFormat(startDate.getDate());
+				month = zeroFirstFormat(startDate.getMonth()+1);
+				year = zeroFirstFormat(startDate.getFullYear());
+			}			
+			dateText.value = day+"."+month+"."+year;				
+		}
+		function allFieldsFilled(){
+			let filled = true;
+			let whatNeedsToFill = "Заполните следуюшие поля:\n";
+			let heightField = document.getElementById('height');
+			let weightField = document.getElementById('weight');
+			let pushupField = document.getElementById('pushup');
+			let pullupField = document.getElementById('pullup');
+			let numOfDays = 0; // количество выбранных дней недели для тренировок
+			var monCheck = document.getElementById('mon'); // чекбоксы для дней недели
+			var tuesCheck = document.getElementById('tues');
+			var wedCheck = document.getElementById('wed');
+			var thursCheck = document.getElementById('thurs');
+			var friCheck = document.getElementById('fri');
+			var satCheck = document.getElementById('sat');
+			var sunCheck = document.getElementById('sun');
+			if (monCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (tuesCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (wedCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (thursCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (friCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (satCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (sunCheck.checked){
+				numOfDays = numOfDays + 1;
+			}
+			if (heightField.value == ""){			
+				whatNeedsToFill = whatNeedsToFill + "Рост\n";
+				filled = false;
+			}
+			if (weightField.value == ""){
+				whatNeedsToFill = whatNeedsToFill + "Вес\n";
+				filled = false;
+			}
+			if (pushupField.value == ""){
+				whatNeedsToFill = whatNeedsToFill + "Количество отжиманий\n";
+				filled = false;
+			}
+			if (pullupField.value == ""){
+				whatNeedsToFill = whatNeedsToFill + "Количество подтягиваний\n";
+				filled = false;
+			}
+			if (startDate == null){
+				whatNeedsToFill = whatNeedsToFill + "Дата начала занятий\n";
+				filled = false;
+			}
+			if (!filled){
+				alert(whatNeedsToFill);
+				return false;
+			}
+			if ((numOfDays<2)||(numOfDays>5)){
+				alert("Количество дней для тренировок должно быть от 2 до 5");
+				return false;
+			}
+			return true;
+		}
+		function calculateImtValue(){
+			function placeTrain(){
+				t.innerHTML = t.innerHTML.replace("Untodo",trainPlan[currentTrain]+"<br>Отжимания: "+pushUpsPlan[currentPushup]+" раз<br>Подтягивания: "+pullUpsPlan[currentPullUp]+" раз");  
+				currentTrain = currentTrain + 1;            //ставим тренировку из плана в ячейку и переходим к следующей
+					if (currentPushup!=29){ // повторяем последний план, т.к. увеличения нагрузки дальше не идёт
+						if (nextPush){
+							currentPushup = currentPushup + 1;
+							nextPush = false;
+						}
+						else{
+							nextPush = true;
+						}
+					}
+					if (currentPullUp!=28){
+						if (nextPullup == 2){
+							currentPullUp = currentPullUp + 1;
+							nextPullup = 0;
+						}
+						else{
+							nextPullup = nextPullup + 1;
+						}
+					}
+			}
+			if (!allFieldsFilled()){
+				return;
+			}
+			var weight = Number(document.getElementById('weight').value);
+			var rost = Number(document.getElementById('height').value)/100;
+			var value = weight/(rost*rost);
+			var imtValueInfo = document.querySelector('.calcimt');
+			imtValueInfo.style.opacity='1';
+			var imtValue = document.getElementById('imtvalue');
+			imtValue.value = value.toFixed(2);	// числовое значение имт
+			var result = document.getElementById('imtResult');			
+			if (value<16) {
+				result.value = "Выраженный дефицит массы тела, необходима консультация специалиста перед началом занятий";
+				result.style.color = '#0000cc';	
+			}		
+			if ((value>=16)&&(value<18.5)){
+				result.value = "Недостаточная масса тела(дефицит)";
+				result.style.color = '#1a75ff';
+			}
+			if ((value>=18.5)&&(value<25)){
+				result.value = "Нормальный вес";
+				result.style.color = '#009933';
+			}
+			if ((value>=25)&&(value<30)){
+				result.value = "Избыточная масса тела(предожирение)";
+				result.style.color = '#739900';
+			}
+			if ((value>=30)&&(value<35)){
+				result.value = "Ожирение первой степени";
+				result.style.color = '#b38f00';
+			}
+			if ((value>=35)&&(value<40)){
+				result.value = "Ожирение второй степени, необходима консультация специалиста перед началом занятий";
+				result.style.color = '#e65c00';
+			}
+			if (value>=40){
+				result.value = "Ожирение третьей степени, необходима срочная консультация специалиста!";
+				result.style.color ='#cc0000';
+			}
+			//checkbox.checked проверка на выбор чекбокса
+			//var t = document.getElementById('1');
+			//t.textContent = 'blabla';
+			var i = startDate.getDay(); // 0 - воскресенье, 1 понедельник и т.д.
+			if (i==0) i = 7; // т.к. воскресенье в календаре это 7, а не 0, как дано
+			
+			
+			var trainPlan;
+			if ((value<18)||((value>=25)&&(value<30))){ // для худых и с предожирением
+				trainPlan = runForSkinnyAndPreFat;	
+			}
+			if ((value>=18.5)&&(value<25)){   // для нормального веса
+				trainPlan = runForNormal;
+			}
+			if ((value>=30)&&(value<35)) { // ожирение первой степени
+				trainPlan = runForLittleFat;
+			}
+			if ((value>=35)&&(value<40)){ // ожирение второй степени
+				trainPlan = runForMediumFat;
+			}
+			if (value>=40){
+				trainPlan = runForExtraFat; // третьей степени
+			}
+			var currentTrain = 0; // индекс текущей беговой тренировки
+			var currentPushup;
+			var numPushUp = document.getElementById('pushup');
+			if (numPushUp.value<=5) {                          // вычисление первого подхода по отжиманиям
+				currentPushup = 0;
+			}
+			if ((numPushUp.value>5)&&(numPushUp.value<=10)){
+				currentPushup = 4;
+			}
+			if ((numPushUp.value>10)&&(numPushUp.value<15)){
+				currentPushup = 8;
+			}
+			if ((numPushUp.value>=15)&&(numPushUp.value<20)){
+				currentPushup = 12;
+			}
+			if ((numPushUp.value>=20)&&(numPushUp.value<25)){
+				currentPushup = 16;
+			}
+			if ((numPushUp.value>=25)&&(numPushUp.value<35)){
+				currentPushup = 20;
+			}
+			if ((numPushUp.value>=35)&&(numPushUp.value<45)){
+				currentPushup = 23;
+			}
+			if ((numPushUp.value>=45)&&(numPushUp.value<60)){
+				currentPushup = 25;
+			}
+			if (numPushUp.value>=60){
+				currentPushup = 27;
+			}
+			var currentPullUp;
+			var numPullUp = document.getElementById('pullup');
+			if (numPullUp.value<5){
+				currentPullUp = 0;
+			}
+			if ((numPullUp.value>=5)&&(numPullUp.value<10)){
+				currentPullUp = 3;
+			}
+			if ((numPullUp.value>=10)&&(numPullUp.value<15)){
+				currentPullUp = 8;
+			}
+			if ((numPullUp.value>=15)&&(numPullUp.value<20)){
+				currentPullUp = 15;
+			}
+			if ((numPullUp.value>=20)&&(numPullUp.value<25)){
+				currentPullUp = 19;
+			}
+			if (numPullUp.value>=25){
+				currentPullUp = 23;
+			}
+			var monCheck = document.getElementById('mon'); // чекбоксы для дней недели
+		    var tuesCheck = document.getElementById('tues');
+			var wedCheck = document.getElementById('wed');
+			var thursCheck = document.getElementById('thurs');
+			var friCheck = document.getElementById('fri');
+			var satCheck = document.getElementById('sat');
+			var sunCheck = document.getElementById('sun');
+			var nextPush = false;
+			var nextPullup = 0; // когда достигает 2, тогда след по плану
+			var j = i-1;
+			while (j>=1){ // нужно убрать пустые даты до начала тренировок
+				var t = document.getElementById(`${j}`) // находим ячейку для данного дня недели
+				t.innerHTML = t.innerHTML.replace("Undate"," "); // пустая ячейка
+				t.innerHTML = t.innerHTML.replace("Untodo"," ");
+				j = j-1;
+			}			
+			while (i<=28){
+				var t = document.getElementById(`${i}`) // находим ячейку для данного дня недели
+				t.innerHTML = t.innerHTML.replace("Undate",String(zeroFirstFormat(startDate.getDate())+"."+zeroFirstFormat(startDate.getMonth()+1)));
+				// заносим в неё дату
+
+				if ((i==1)||(i==8)||(i==15)||(i==22)){
+					if (!monCheck.checked){ // если в этот день отдых
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {                                           // если тренировка
+						placeTrain();
+					}
+				}
+				if ((i==2)||(i==9)||(i==16)||(i==23)){
+					if (!tuesCheck.checked) {
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();                 
+					}
+				}
+				if ((i==3)||(i==10)||(i==17)||(i==24)){
+					if (!wedCheck.checked){
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();
+					}
+				}
+				if ((i==4)||(i==11)||(i==18)||(i==25)){
+					if (!thursCheck.checked){
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();
+					}
+				}
+				if ((i==5)||(i==12)||(i==19)||(i==26)){
+					if (!friCheck.checked){
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();
+					}
+				}
+				if ((i==6)||(i==13)||(i==20)||(i==27)){
+					if (!satCheck.checked){
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();
+					}
+				}
+				if ((i==7)||(i==14)||(i==21)||(i==28)){
+					if (!sunCheck.checked){
+						t.innerHTML = t.innerHTML.replace("Untodo","отдых");
+					}
+					else {
+						placeTrain();
+					}
+				}
+				startDate.setDate(startDate.getDate()+1); // повышаем дату на 1 день
+				i++; // и повышаем индекс ячейки
+			}
+			let tablePlan = document.getElementById('planTable');
+			tablePlan.style.opacity = 1;
+		}
+	</script>
+	</head>
+	<body>		
+		<p> Заполните информацию о себе: </p>
+		<table >
+			<tr>
+			<td> Рост(см): </td> <td> <input type="text" id="height" placeholder="от 150 до 220" size="12"> </td> 
+			</tr>
+			<tr>
+				<td> Вес(кг): </td> <td> <input type="text" id="weight" placeholder="от 50 до 140" size="10"> </td>
+			</tr>
+			<tr>
+				<td>Максимальное количество за подход:</td>
+			</tr>
+			<tr>
+				<td> Отжиманий:</td> <td><input type="text" id="pushup" size="10"></td>
+			</tr>
+			<tr>
+			<td> Подтягиваний: </td> <td><input type="text" id="pullup" size="10"> </td>
+			</tr>
+		</table>	
+		Выберите желаемые дни недели для тренировок<span class=prompt>(от 2 до 5)</span>: <br />
+		<input type="checkbox" id="mon"> Понедельник <br />
+		<input type="checkbox" id="tues"> Вторник <br />
+		<input type="checkbox" id="wed"> Среда <br />
+		<input type="checkbox" id="thurs"> Четверг <br />
+		<input type="checkbox" id="fri"> Пятница <br />
+		<input type="checkbox" id="sat"> Суббота <br />
+		<input type="checkbox" id="sun"> Воскресенье </br>
+
+		Когда начать занятия: <input type="text" id="startDateField" value="" readonly="readonly" size="7"> <br/> <input type="button" onclick="setStartDate(1)" value="Сегодня"> <input type="button" onclick="setStartDate(2)" value="Завтра"> <input type="button" onclick="setStartDate(3)" value="С понедельника"> 
+		<br /> <br />
+		<input type="button" value="Получить тренировочный план" onclick="calculateImtValue()">	<div class="calcimt"> Индекс массы тела: <input type="text" id="imtvalue" size="5" readonly="readonly"> <input type="text" size="90" id="imtResult" value=" " readonly="readonly">  </div>
+		<table id="planTable" style="opacity: 0;">
+			<tr style="font-size: 15pt;">
+				<td>Понедельник</td><td>Вторник</td><td>Среда</td><td>Четверг</td><td>Пятница</td><td>Суббота</td><td>Воскресенье</td>
+			</tr>
+			<tr>
+				<td id="1"> <span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span> </td><td  id="2" ><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="3"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="4"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="5"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="6"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="7"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td>
+			</tr>
+			<tr>
+				<td id="8"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td  id="9"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="10"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="11"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="12"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="13"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="14"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td>
+			</tr>
+			<tr>
+				<td id="15"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td  id="16"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="17"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="18"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="19"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="20"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="21"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td>
+			</tr>
+			<tr>
+				<td id="22"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td  id="23"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="24"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="25"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="26"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="27"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td><td id="28"><span class=dateStyle> Undate </span> <br /> <span class = todoStyle> Untodo </span></td>
+			</tr>
+		</table>
+	</body>
+</html>
